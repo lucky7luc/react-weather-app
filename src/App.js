@@ -3,7 +3,7 @@ import Weather from './Weather';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App text-center">
       <h1>Lucky's Weather-App</h1>
       <Weather />
     </div>

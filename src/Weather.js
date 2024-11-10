@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 
 function Weather() {
   const [location, setLocation] = useState('Berlin'); // Standardort
@@ -9,6 +10,10 @@ function Weather() {
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe/Berlin`)
       .then(response => response.json())
       .then(data => setWeatherData(data.daily))
+      /*.then(data => {
+        setWeatherData(data.daily);
+        console.log("Weather Data:", data.daily); // Hier werden die Wettercodes geloggt
+      })*/
       .catch(error => console.error("Fehler beim Abrufen der Wetterdaten:", error));
   };
 
@@ -64,6 +69,9 @@ function Weather() {
       24: 'wi-sand',
       45: 'wi-fog',
       61: 'wi-rain-mix',
+      71: 'wi-snowflake-cold',
+      77: 'wi-snow-wind',         
+      80: 'wi-showers',
     };
     return weatherIcons[weatherCode] || 'wi-na';
   };
@@ -84,32 +92,43 @@ function Weather() {
     }
   };
 
+ 
   return (
-    <div>
+    <div className="container text-center mt-5">
       <h2>Wettervorhersage für {location}</h2>
-      <input 
-        type="text" 
-        value={location} 
-        onChange={(e) => setLocation(e.target.value)} 
-        placeholder="Ort eingeben" 
-      />
-      <button onClick={fetchCoordinates}>Suche</button>
-
+      <div className="input-group mb-4">
+        <input
+          type="text"
+          className="form-control"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Ort eingeben"
+        />
+        <button className="btn btn-primary" onClick={fetchCoordinates}>Suche</button>
+      </div>
+      
+      
       {weatherData ? (
-        weatherData.time.map((date, index) => (
-          <div key={index}>
-            <p>
-              {getDayLabel(date, index)}: 
-              <i className={`wi ${getWeatherIconClass(weatherData.weathercode[index])}`}></i>
-              Max: {weatherData.temperature_2m_max[index]}°C, Min: {weatherData.temperature_2m_min[index]}°C
-            </p>
-          </div>
-        ))
+        <div className="row d-flex flex-wrap justify-content-center">
+          {weatherData.time.map((date, index) => (
+            <div key={index} className="col-12 col-md-3 col-lg-1 m-2 day-container">
+              <div className="card h-100">
+                <div className="card-body d-flex flex-column ">
+                  <h5 className="card-title">{getDayLabel(date, index)}</h5>
+                  <i className={`wi ${getWeatherIconClass(weatherData.weathercode[index])} display-6`}></i>
+                  <p className="card-text mt-auto temperature">
+                    Max: <b>{weatherData.temperature_2m_max[index]}°C</b><br />
+                    Min: <b>{weatherData.temperature_2m_min[index]}°C</b>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <p>Lade Wetterdaten...</p>
       )}
     </div>
   );
 }
-
 export default Weather;
