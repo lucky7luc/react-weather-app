@@ -14,7 +14,7 @@ function Weather() {
         setWeatherData(data.daily);
         console.log("Weather Data:", data.daily); // Hier werden die Wettercodes geloggt
       })*/
-      .catch(error => console.error("Fehler beim Abrufen der Wetterdaten:", error));
+      .catch(error => console.error("Error fetching weather data:", error));
   };
 
   const fetchCoordinates = () => {
@@ -24,7 +24,7 @@ function Weather() {
         const { lat, lng } = data.results[0].geometry;
         fetchWeatherData({ latitude: lat, longitude: lng });
       })
-      .catch(error => console.error("Fehler beim Abrufen der Koordinaten:", error));
+      .catch(error => console.error("Error fetching coordinates:", error));
   };
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function Weather() {
 
   // function to format the current date
   const formatDate = (dateString) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const date = new Date(dateString);
     return date.toLocaleDateString('de-DE', options);
   };
@@ -79,7 +79,7 @@ const getWeatherIcon = (weatherCode) => {
 };
 
 
-const getDayLabel = (dateString, index) => {
+const getDayLabel = (dateString) => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -121,7 +121,7 @@ return (
           <div key={index} className="col-12 col-md-3 col-lg-1 m-2 day-container flex-effect">
             <div className="card h-100">
               <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{getDayLabel(date, index)}</h5>
+                <h5 className="card-title">{getDayLabel(date)}</h5>
                 <i className={`wi ${getWeatherIcon(weatherData.weathercode[index]).iconClass} display-5 padding`}></i>
                 <p className="description">{getWeatherIcon(weatherData.weathercode[index]).description}</p>
                 <p className="card-text mt-auto temperature">
